@@ -296,12 +296,33 @@ class Brick(PygameDrawable):
         self.height = height
         self.xdistance = xdistance
 
+        # self.dxOffset = -1
+        # self.xOffset = 0
+        self.dyOffset = -1
+        self.yOffset = 70
+
         self.x = (self.width+self.xdistance)*i+self.xdistance
-        self.y = 70+(self.height+8)*j
+        self.y = self.yOffset +(self.height+8)*j
+
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
 
     def draw_on_screen(self, screen):
         pygame.draw.rect(screen, grey, self.rect, 0)
+
+    def update(self):
+        if self.yOffset < 70 or self.yOffset > 100:
+            self.dyOffset = -self.dyOffset
+        # if self.xOffset < -20 or self.xOffset > 20:
+        #     self.dxOffset = -self.dxOffset
+
+        # self.xOffset += self.dxOffset
+        self.yOffset += self.dyOffset
+
+        # self.x = self.xOffset + (self.width+self.xdistance)*self.i+self.xdistance
+        self.y = self.yOffset +(self.height+8)*self.j
+
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
 
 class BrickGrid(PygameDrawable):
@@ -338,6 +359,10 @@ class BrickGrid(PygameDrawable):
 
     def is_empty(self):
         return len(self.bricks) == 0
+
+    def update(self):
+        for b in self.bricks.values():
+            b.update()
 
 
 class Ball(PygameDrawable):
@@ -514,6 +539,9 @@ class BreakoutState(object):
         self.paddle.update(command)
         self.ball.update()
         self.bullet.update()
+
+        self.brick_grid.update()
+
         self.last_command = str(command)
 
     def remove_brick_at_position(self, position: Position):
