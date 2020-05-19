@@ -24,7 +24,7 @@ class BreakoutDictSpace(BreakoutSkipper):
 
         if self.config.ball_enabled:
             self.observation_space = Dict({
-                "paddle_x": self._paddle_x_space,
+                "paddle_x": self._paddleBack_x_space,
                 "ball_x": self._ball_x_space,
                 "ball_y": self._ball_y_space,
                 "ball_x_speed": self._ball_x_speed_space,
@@ -33,7 +33,7 @@ class BreakoutDictSpace(BreakoutSkipper):
             })
         else:
             self.observation_space = Dict({
-                "paddle_x": self._paddle_x_space,
+                "paddle_x": self._paddleBack_x_space,
                 "bricks_matrix": self._bricks_matrix_space,
             })
 

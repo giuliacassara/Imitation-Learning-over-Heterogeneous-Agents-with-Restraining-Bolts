@@ -28,7 +28,7 @@ class BreakoutNMultiDiscrete(BreakoutSkipper):
     def __init__(self, config: Optional[BreakoutConfiguration] = None):
         super().__init__(config)
         self.observation_space = MultiDiscrete((
-            self._paddle_x_space.n,
+            self._paddleBack_x_space.n,
             self._ball_x_space.n,
             self._ball_y_space.n,
             self._ball_x_speed_space.n,
