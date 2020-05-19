@@ -4,6 +4,10 @@
 The breakout game is based on CoderDojoSV/beginner-python's tutorial
 
 Luca Iocchi 2017
+
+Modified by: Fabian Humberto Fonseca Aponte  19 May 2020
+fonsecaaponte.1886565@studenti.uniroma1.it
+
 """
 import math
 import random
@@ -65,7 +69,8 @@ class PygameViewer(_AbstractPygameViewer):
     def _init_drawables(self) -> Set[PygameDrawable]:
         result = set()
         result.add(self.state.ball)
-        result.add(self.state.paddle)
+        result.add(self.state.paddleBack)
+        result.add(self.state.paddleFront)
         result.add(self.state.brick_grid)
         result.add(self.state.bullet)
         return result
@@ -166,7 +171,11 @@ class BreakoutConfiguration(object):
         return self.win_width // self._resolution_x + 1
 
     @property
-    def n_paddle_x(self):
+    def n_paddleBack_x(self):
+        return self.win_width // self._resolution_x + 1
+
+    @property
+    def n_paddleFront_x(self):
         return self.win_width // self._resolution_x + 1
 
     @property
@@ -434,7 +443,7 @@ class Ball(PygameDrawable):
         self.y += self.speed_y
 
 
-class Paddle(PygameDrawable):
+class PaddleBack(PygameDrawable):
 
     def __init__(self, breakout_config: BreakoutConfiguration):
         self.config = breakout_config
@@ -443,6 +452,48 @@ class Paddle(PygameDrawable):
         _initial_paddle_y = self.config.win_height - 20
         self.x = _initial_paddle_x
         self.y = _initial_paddle_y
+
+    @property
+    def width(self):
+        return self.config._paddle_width
+
+    @property
+    def height(self):
+        return self.config._paddle_height
+
+    @property
+    def speed(self):
+        return self.config._paddle_speed
+
+    def draw_on_screen(self, screen: pygame.Surface):
+        pygame.draw.rect(screen, grey, [self.x, self.y, self.width, self.height], 0)
+
+    def update(self, command: Command):
+        if command == Command.LEFT:
+            self.x -= self.speed
+        elif command == Command.RIGHT:
+            self.x += self.speed
+        elif command == Command.NOP:
+            pass
+        elif command == Command.FIRE:
+            pass
+        else:
+            raise Exception("Command not recognized.")
+
+        if self.x < 0:
+            self.x = 0
+        if self.x > self.config.win_width - self.width:
+            self.x = self.config.win_width - self.width
+
+class PaddleFront(PygameDrawable):
+
+    def __init__(self, breakout_config: BreakoutConfiguration):
+        self.config = breakout_config
+
+        _initial_paddle_x = self.config.win_width // 2
+        _initial_paddle_y = self.config.win_height - 50
+        self.x = _initial_paddle_x
+        self.y = _initial_paddle_y - 50
 
     @property
     def width(self):
@@ -519,7 +570,8 @@ class BreakoutState(object):
         self.config = breakout_configuration
 
         self.ball = Ball(self.config)
-        self.paddle = Paddle(self.config)
+        self.paddleBack = PaddleBack(self.config)
+        self.paddleFront = PaddleFront(self.config)
         self.brick_grid = BrickGrid(self.config.brick_cols,
                                     self.config.brick_rows,
                                     self.config.brick_width,
@@ -536,7 +588,8 @@ class BreakoutState(object):
         return BreakoutState(self.config)
 
     def update(self, command: Command):
-        self.paddle.update(command)
+        self.paddleBack.update(command)
+        self.paddleFront.update(command)
         self.ball.update()
         self.bullet.update()
 
@@ -554,11 +607,12 @@ class BreakoutState(object):
         ball_y = int(self.ball.y) // self.config.resolution_y
         ball_x_speed = self.ball.speed_x_norm
         ball_y_speed = self.ball.speed_y_norm
-        paddle_x = int(self.paddle.x) // self.config.resolution_x
+        paddleBack_x = int(self.paddleBack.x) // self.config.resolution_x
+        # paddleFront_x = int(self.paddleFront.x) // self.config.resolution_x
         bricks_matrix = self.brick_grid.bricksgrid
 
         return {
-            "paddle_x": paddle_x,
+            "paddle_x": paddleBack_x,
             "ball_x": ball_x,
             "ball_y": ball_y,
             "ball_x_speed": ball_y_speed,
@@ -577,7 +631,8 @@ class BreakoutState(object):
         self.update(command)
 
         ball = self.ball
-        paddle = self.paddle
+        paddleBack = self.paddleBack
+        paddleFront = self.paddleFront
         bullet = self.bullet
         brick_grid = self.brick_grid
 
@@ -585,7 +640,8 @@ class BreakoutState(object):
                                 ball.y - ball.radius,
                                 ball.radius * 2,
                                 ball.radius * 2)
-        paddle_rect = pygame.Rect(paddle.x, paddle.y, paddle.width, paddle.height)
+        paddleBack_rect = pygame.Rect(paddleBack.x, paddleBack.y, paddleBack.width, paddleBack.height)
+        paddleFront_rect = pygame.Rect(paddleFront.x, paddleFront.y, paddleFront.width, paddleFront.height)
         bullet_rect = pygame.Rect(bullet.x, bullet.y, bullet.width, bullet.height)
 
         # for screen border
@@ -601,10 +657,10 @@ class BreakoutState(object):
             ball.x = self.config.win_width - ball.radius
             ball.speed_x = - ball.speed_x
 
-        # for paddle
-        if ball_rect.colliderect(paddle_rect):
+        # for paddle in the back
+        if ball_rect.colliderect(paddleBack_rect):
             if self.config.complex_bump:
-                dbp = math.fabs(ball.x - (paddle.x + paddle.width / 2))
+                dbp = math.fabs(ball.x - (paddleBack.x + paddleBack.width / 2))
                 if dbp < 20:
                     # print 'straight'
                     if (ball.speed_x < -5):
@@ -616,33 +672,84 @@ class BreakoutState(object):
                     elif (ball.speed_x >= 0.5):
                         ball.speed_x -= 0.5
 
-                dbp = math.fabs(ball.x - (paddle.x + 0))
+                dbp = math.fabs(ball.x - (paddleBack.x + 0))
                 if dbp < 10:
                     # print 'left'
                     ball.speed_x = -abs(ball.speed_x) - 1
-                dbp = math.fabs(ball.x - (paddle.x + paddle.width))
+                dbp = math.fabs(ball.x - (paddleBack.x + paddleBack.width))
                 if dbp < 10:
                     # print 'right'
                     ball.speed_x = abs(ball.speed_x) + 1
 
             else:
-                dbp = math.fabs(ball.x - (paddle.x + paddle.width / 2))
+                dbp = math.fabs(ball.x - (paddleBack.x + paddleBack.width / 2))
                 if dbp < 20:
                     # print 'straight'
                     if (ball.speed_x != 0):
                         ball.speed_x = 2 * abs(ball.speed_x) / ball.speed_x
-                dbp = math.fabs(ball.x - (paddle.x + 0))
+                dbp = math.fabs(ball.x - (paddleBack.x + 0))
                 if dbp < 20:
                     # print 'left'
                     ball.speed_x = -5
-                    RandomEventGenerator.perturbate_ball_speed_after_paddle_hit(self)
-                dbp = math.fabs(ball.x - (paddle.x + paddle.width))
+                    RandomEventGenerator.perturbate_ball_speed_after_paddleBack_hit(self)
+                dbp = math.fabs(ball.x - (paddleBack.x + paddleBack.width))
                 if dbp < 20:
                     # print 'right'
                     ball.speed_x = 5
-                    RandomEventGenerator.perturbate_ball_speed_after_paddle_hit(self)
+                    RandomEventGenerator.perturbate_ball_speed_after_paddleBack_hit(self)
 
             ball.speed_y = - abs(ball.speed_y)
+
+        # for paddle in the front
+        if ball_rect.colliderect(paddleFront_rect):
+            if self.config.complex_bump:
+                dbp = math.fabs(ball.x - (paddleFront.x + paddleFront.width / 2))
+                if dbp < 20:
+                    # print 'straight'
+                    if (ball.speed_x < -5):
+                        ball.speed_x += 2
+                    elif (ball.speed_x > 5):
+                        ball.speed_x -= 2
+                    elif (ball.speed_x <= -0.5):
+                        ball.speed_x += 0.5
+                    elif (ball.speed_x >= 0.5):
+                        ball.speed_x -= 0.5
+
+                dbp = math.fabs(ball.x - (paddleFront.x + 0))
+                if dbp < 10:
+                    # print 'left'
+                    ball.speed_x = -abs(ball.speed_x) - 1
+                dbp = math.fabs(ball.x - (paddleFront.x + paddleFront.width))
+                if dbp < 10:
+                    # print 'right'
+                    ball.speed_x = abs(ball.speed_x) + 1
+
+            else:
+                dbp = math.fabs(ball.x - (paddleFront.x + paddleFront.width / 2))
+                if dbp < 20:
+                    # print 'straight'
+                    if (ball.speed_x != 0):
+                        ball.speed_x = 2 * abs(ball.speed_x) / ball.speed_x
+                dbp = math.fabs(ball.x - (paddleFront.x + 0))
+                if dbp < 20:
+                    # print 'left'
+                    ball.speed_x = -5
+                    RandomEventGenerator.perturbate_ball_speed_after_paddleFront_hit(self)
+                dbp = math.fabs(ball.x - (paddleFront.x + paddleFront.width))
+                if dbp < 20:
+                    # print 'right'
+                    ball.speed_x = 5
+                    RandomEventGenerator.perturbate_ball_speed_after_paddleFront_hit(self)
+
+            ball.speed_y = - abs(ball.speed_y)
+
+        
+
+
+
+
+
+
 
         for brick in brick_grid.bricks.values():
             if brick.rect.colliderect(ball_rect):
@@ -654,8 +761,8 @@ class BreakoutState(object):
 
         if command == Command.FIRE:  # fire
             if not bullet.in_movement:
-                bullet.x = paddle.x + paddle.width / 2
-                bullet.y = paddle.y
+                bullet.x = paddleBack.x + paddleBack.width / 2
+                bullet.y = paddleBack.y
                 bullet.speed_y = -10
 
         # firing
@@ -705,7 +812,20 @@ class RandomEventGenerator:
             # print("random ball_speed_x = %.2f" %self.ball_speed_x)
 
     @classmethod
-    def perturbate_ball_speed_after_paddle_hit(cls, state: BreakoutState):
+    def perturbate_ball_speed_after_paddleBack_hit(cls, state: BreakoutState):
+        if not state.config.deterministic:
+            ran = random.uniform(0.0, 1.0)
+            if ran < 0.1:
+                state.ball.speed_x *= 0.75
+            elif ran > 0.9:
+                state.ball.speed_x *= 1.5
+            sign = state.ball.speed_x / abs(state.ball.speed_x)
+            state.ball.speed_x = min(state.ball.speed_x, 6) * sign
+            state.ball.speed_x = max(state.ball.speed_x, 0.5) * sign
+            # print("random ball_speed_x = %.2f" %self.ball_speed_x)
+
+    @classmethod
+    def perturbate_ball_speed_after_paddleFront_hit(cls, state: BreakoutState):
         if not state.config.deterministic:
             ran = random.uniform(0.0, 1.0)
             if ran < 0.1:
@@ -731,7 +851,8 @@ class Breakout(gym.Env, ABC):
 
         self.action_space = Discrete(len(Command) if self.config.fire_enabled else len(Command) - 1)
 
-        self._paddle_x_space = Discrete(self.config.n_paddle_x)
+        self._paddleBack_x_space = Discrete(self.config.n_paddleBack_x)
+        self._paddleFront_x_space = Discrete(self.config.n_paddleFront_x)
         self._ball_x_space = Discrete(self.config.n_ball_x)
         self._ball_y_space = Discrete(self.config.n_ball_y)
         self._ball_x_speed_space = Discrete(self.config.n_ball_x_speed)
