@@ -136,8 +136,13 @@ class BreakoutConfiguration(object):
         assert fire_enabled or ball_enabled, "Either fire or ball must be enabled."
         self._brick_rows = brick_rows
         self._brick_cols = brick_cols
+
         self._paddle_width = paddle_width
         self._paddle_height = paddle_height
+
+        self._paddleFront_width = paddle_width - 30
+        self._paddleFront_height = paddle_height
+
         self._paddle_speed = paddle_speed
         self._brick_width = brick_width
         self._brick_height = brick_height
@@ -490,18 +495,18 @@ class PaddleFront(PygameDrawable):
     def __init__(self, breakout_config: BreakoutConfiguration):
         self.config = breakout_config
 
-        _initial_paddle_x = self.config.win_width // 2
-        _initial_paddle_y = self.config.win_height - 50
+        _initial_paddle_x = self.config.win_width // 2 + 15
+        _initial_paddle_y = self.config.win_height - 20
         self.x = _initial_paddle_x
-        self.y = _initial_paddle_y - 50
+        self.y = _initial_paddle_y - 120
 
     @property
     def width(self):
-        return self.config._paddle_width
+        return self.config._paddleFront_width
 
     @property
     def height(self):
-        return self.config._paddle_height
+        return self.config._paddleFront_height
 
     @property
     def speed(self):
