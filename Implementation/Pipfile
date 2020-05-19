@@ -1,0 +1,23 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+
+[packages]
+gym-breakout-pygame = {git = "https://github.com/sapienza-rl/gym-breakout-pygame",ref = "980952a781164e2bec5fe99889a811f4dc67ea9c"}
+gym-minecraft-pygame = {git = "https://github.com/sapienza-rl/gym-minecraft-pygame.git",ref = "develop"}
+gym-sapientino = {git = "https://github.com/sapienza-rl/gym-sapientino",ref = "bcc22aae932cbd677e426d3ce4832c7d96c3940e"}
+temprl = {git = "https://github.com/sapienza-rl/temprl.git",ref = "58fa048ec3111ab2625c517fa667b57cf7d71086"}
+inferrer = {git = "https://github.com/sapienza-rl/inferrer.git"}
+flloat = "==0.2.3"
+pythomata = "==0.2.0"
+matplotlib = "*"
+seaborn = "*"
+pyyaml = "*"
+graphviz = "*"
+gym = "*"
+
+[requires]
+python_version = "3.7"
