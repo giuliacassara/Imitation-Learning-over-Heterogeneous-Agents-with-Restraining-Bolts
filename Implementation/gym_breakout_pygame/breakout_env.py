@@ -749,8 +749,8 @@ class BreakoutState(object):
             ball.speed_y = - abs(ball.speed_y)
             
             if self.config.ball_enabled:
-                self.score += (self.config.brick_reward*15)
-                reward += (self.config.brick_reward*15)
+                self.score += (self.config.brick_reward*10)
+                reward += (self.config.brick_reward*10)
 
 
         for brick in brick_grid.bricks.values():
