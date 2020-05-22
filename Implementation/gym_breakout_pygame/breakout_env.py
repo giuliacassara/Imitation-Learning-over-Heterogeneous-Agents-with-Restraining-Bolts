@@ -310,8 +310,8 @@ class Brick(PygameDrawable):
         self.height = height
         self.xdistance = xdistance
 
-        # self.dxOffset = -1
-        # self.xOffset = 0
+        self.dxOffset = -1
+        self.xOffset = 0
         self.dyOffset = -1
         self.yOffset = 70
 
@@ -327,13 +327,13 @@ class Brick(PygameDrawable):
     def update(self):
         if self.yOffset < 70 or self.yOffset > 100:
             self.dyOffset = -self.dyOffset
-        # if self.xOffset < -20 or self.xOffset > 20:
-        #     self.dxOffset = -self.dxOffset
+        if self.xOffset < -20 or self.xOffset > 20:
+            self.dxOffset = -self.dxOffset
 
-        # self.xOffset += self.dxOffset
-        self.yOffset += self.dyOffset
+        self.xOffset += self.dxOffset
+        # self.yOffset += self.dyOffset
 
-        # self.x = self.xOffset + (self.width+self.xdistance)*self.i+self.xdistance
+        self.x = self.xOffset + (self.width+self.xdistance)*self.i+self.xdistance
         self.y = self.yOffset +(self.height+8)*self.j
 
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
