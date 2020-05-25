@@ -28,7 +28,7 @@ The Horizontal movement of the bricks increase to a *medium level* the difficult
 ![](./Implementation/experiments/breakout-output-X/learner/videos/X-learner.gif)
 
 ### Plane movement with frontal paddle
-The plane movement of the bricks *peaked the difficulty* for the expert agent since now is not able to finish the task due to *resonance phenomena*. Nevertheless, the traces obtained from the failed expert are able to generate a DFA that guide the lerner agent to a successful behavior.
+The plane movement of the bricks *peaked the difficulty* for the expert agent since now is not able to finish the task due to *resonance phenomena* (which is only visible in the [video](https://github.com/giuliacern/Imitation-Learning-over-Heterogeneous-Agents-with-Restraining-Bolts/blob/master/Implementation/experiments/breakout-output-XY/expert/videos/openaigym.video.0.16364.video000001.mp4) of the experiment). Nevertheless, the traces obtained from the failed expert are able to generate a DFA that guide the lerner agent to a successful behavior.
 
 ![](./Implementation/experiments/breakout-output-XY/expert/videos/XY-expert.gif)
 ![](./Implementation/experiments/breakout-output-XY/learner/videos/XY-learner.gif)
