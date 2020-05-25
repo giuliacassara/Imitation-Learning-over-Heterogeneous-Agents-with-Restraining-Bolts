@@ -24,13 +24,13 @@ The vertical movement of the bricks and the addition of a front paddle have no i
 ### Horizontal movement with frontal paddle
 The Horizontal movement of the bricks increase to a *medium level* the difficulty for the expert agent, but the learner agent remains stable in cooperation.
 
-![](./Implementation/experiments/breakout-output-high-reward/expert/videos/X-expert.gif)
-![](./Implementation/experiments/breakout-output-high-reward/learner/videos/X-learner.gif)
+![](./Implementation/experiments/breakout-output-X/expert/videos/X-expert.gif)
+![](./Implementation/experiments/breakout-output-X/learner/videos/X-learner.gif)
 
 ### Plane movement with frontal paddle
 The plane movement of the bricks *peaked the difficulty* for the expert agent since now is not able to finish the task due to *resonance phenomena*. Nevertheless, the traces obtained from the failed expert are able to generate a DFA that guide the lerner agent to a successful behavior.
-![](./Implementation/experiments/breakout-output-high-reward/expert/videos/XY-expert.gif)
-![](./Implementation/experiments/breakout-output-high-reward/learner/videos/XY-learner.gif)
+![](./Implementation/experiments/breakout-output-XY/expert/videos/XY-expert.gif)
+![](./Implementation/experiments/breakout-output-XY/learner/videos/XY-learner.gif)
 
 ## Setup
 Set your virtual environment up:
