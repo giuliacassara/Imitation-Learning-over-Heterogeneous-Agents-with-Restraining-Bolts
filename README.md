@@ -22,7 +22,7 @@ The vertical movement of the bricks and the addition of a front paddle have no i
 ![](./Implementation/experiments/breakout-output-high-reward/learner/videos/high-reward-learner.gif)
 
 ### Horizontal movement with frontal paddle
-The Horizontal movement of the bricks increase to a *medium level* the difficulty for the expert agent, but the learner agent remains stable in cooperation.
+The Horizontal movement of the bricks increases to a *medium level* the difficulty for the expert agent, but the learner agent remains stable in cooperation.
 
 ![](./Implementation/experiments/breakout-output-X/expert/videos/X-expert.gif)
 ![](./Implementation/experiments/breakout-output-X/learner/videos/X-learner.gif)
