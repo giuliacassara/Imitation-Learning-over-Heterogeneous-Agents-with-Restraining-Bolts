@@ -10,14 +10,29 @@ Analysis and implementation of a modified training environment from the paper ["
 - Fabian Fonseca
 - Damiano Zappia
 
-## Modified environment: Moving Breakout-Pong with frontal paddle
-The environment had two modifications: The vertical movement of the bricks and the addition of a front paddle. Both modifications have no influence on the functioning of the expert agent, but they considerably modify the behavior of the learner agent.
+## Modified environmentBreakout 
+The environment had a set four modifications in order to stress the *boundaries* of the implementation: Vertical movement ofthe bricks, horizontal movements of the bricks, movement of the bricks around the plane and the inclusion of the front paddle.
+
+The combination of those modifications presented three new study cases in which the *state space gap increases and the robustness of the implementation is tested*.
+
+### Vertical movement with frontal paddle
+The vertical movement of the bricks and the addition of a front paddle have no influence on the functioning of the expert agent, but they considerably modify the behavior of the learner agent since now is capable to **cooperate** with the front paddle to get more reward.
 
 ![](./Implementation/experiments/breakout-output-high-reward/expert/videos/high-reward-expert.gif)
 ![](./Implementation/experiments/breakout-output-high-reward/learner/videos/high-reward-learner.gif)
 
-## Setup
+### Horizontal movement with frontal paddle
+The Horizontal movement of the bricks increase to a *medium level* the difficulty for the expert agent, but the learner agent remains stable in cooperation.
 
+![](./Implementation/experiments/breakout-output-high-reward/expert/videos/X-expert.gif)
+![](./Implementation/experiments/breakout-output-high-reward/learner/videos/X-learner.gif)
+
+### Plane movement with frontal paddle
+The plane movement of the bricks *peaked the difficulty* for the expert agent since now is not able to finish the task due to *resonance phenomena*. Nevertheless, the traces obtained from the failed expert are able to generate a DFA that guide the lerner agent to a successful behavior.
+![](./Implementation/experiments/breakout-output-high-reward/expert/videos/XY-expert.gif)
+![](./Implementation/experiments/breakout-output-high-reward/learner/videos/XY-learner.gif)
+
+## Setup
 Set your virtual environment up:
 ```
 pipenv --python=python3.7
