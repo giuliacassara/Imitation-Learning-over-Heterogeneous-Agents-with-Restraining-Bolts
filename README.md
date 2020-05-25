@@ -29,6 +29,7 @@ The Horizontal movement of the bricks increase to a *medium level* the difficult
 
 ### Plane movement with frontal paddle
 The plane movement of the bricks *peaked the difficulty* for the expert agent since now is not able to finish the task due to *resonance phenomena*. Nevertheless, the traces obtained from the failed expert are able to generate a DFA that guide the lerner agent to a successful behavior.
+
 ![](./Implementation/experiments/breakout-output-XY/expert/videos/XY-expert.gif)
 ![](./Implementation/experiments/breakout-output-XY/learner/videos/XY-learner.gif)
 
